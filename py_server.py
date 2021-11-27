@@ -31,3 +31,6 @@ while True:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
+            
+#https://awakening95.tistory.com/1
+#https://stackoverflow.com/questions/22819214/udp-message-too-long/35335138
