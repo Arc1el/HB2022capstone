@@ -9,8 +9,12 @@
 
 * * *
 
-기술스택
+기술스택 (openvidu-insecure-vue)
 -------------
+docs => https://docs.openvidu.io/en/2.18.0/tutorials/openvidu-insecure-vue/
+
+<img src = "https://user-images.githubusercontent.com/8403172/147533686-e3844e0b-b433-4cf2-bc4a-d735f2117d9b.png"/>
+
 백엔드
 > - Kurento : 웹/모바일 환경에서 비디오 어플리케이션을 개발. WebRTC 서버
 > - OpenVidu : ICE, 시그널링, 미디어 서버 같은 하위 수준 구현 래핑, 메세지 브로드캐스트, 화면공유 같은 기능을 포함한 코드제공. 화상회의 어플리케이션 개발 프레임워크
