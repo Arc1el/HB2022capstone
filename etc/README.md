@@ -8,3 +8,6 @@ https://www.titanwolf.org/Network/q/37f079cd-8209-45a6-9778-101b2d1cede1/x 라�
 
 
 https://m.cafe.naver.com/ca-fe/web/cafes/anycallusershow/articles/2951942?useCafeId=false 안드로이드 uart 동작하기 (저항. 볼트값)
+
+
+https://www.youtube.com/watch?v=CebbJ7zrAWU arduino to pc usb connection
