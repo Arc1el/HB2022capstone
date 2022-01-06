@@ -14,3 +14,7 @@ https://www.youtube.com/watch?v=CebbJ7zrAWU arduino to pc usb connection
 
 
 https://alnova2.tistory.com/1291 mediasoup SFU server webrtc
+
+https://www.youtube.com/watch?v=DOe7GkQgwPo WebRTC: mediasoup (SFU) introduction - Part 1
+
+https://www.youtube.com/watch?v=FLxU6ftLJsE WebRTC: mediasoup (SFU) hands on - Part 2
