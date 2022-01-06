@@ -11,3 +11,6 @@ https://m.cafe.naver.com/ca-fe/web/cafes/anycallusershow/articles/2951942?useCaf
 
 
 https://www.youtube.com/watch?v=CebbJ7zrAWU arduino to pc usb connection
+
+
+https://alnova2.tistory.com/1291 mediasoup SFU server webrtc
