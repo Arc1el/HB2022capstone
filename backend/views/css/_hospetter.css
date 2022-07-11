@@ -1,0 +1,148 @@
+*{
+    font-family: 'Jua', sans-serif;
+    margin:0;
+    padding:0;
+}
+
+a{
+    color: #fff;
+}
+
+html{
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    text-align: var(--bs-body-text-align);
+    -webkit-text-size-adjust: 100%;
+}
+
+#screen{
+    padding: 10%;
+}
+
+h1{
+    font-size: 12rem;
+    line-height: 40px;
+    font-weight: 600;
+    color: black;
+}
+
+.send-button{
+    width:100%;
+    font-weight: 600;
+    color:#fff;
+    padding: 8px 25px;
+}
+
+#send-button{
+    background: #F08080;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.g-button{
+    color: #fff !important;
+    border: 1px solid #EA4335;
+    background: #ea4335 !important;
+    width:100%;
+    font-weight: 600;
+    color:#fff;
+    padding: 8px 25px;
+}
+
+#send-gbutton{
+    font-size: 1.5rem;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.my-input{
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: text;
+    padding: 8px 10px;
+    transition: border .1s linear;
+}
+
+.header-title{
+    margin: 5rem 0;
+}
+
+#navbar-title{
+    font-size: 1.7rem;
+}
+
+#signup_title{
+    font-size: 2rem;   
+}
+
+.login-or {
+    position: relative;
+    color: #aaa;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.span-or {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    margin-left: -25px;
+    background-color: #fff;
+    width: 50px;
+    text-align: center;
+}
+
+.hr-or {
+    height: 1px;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
+.top-nav{
+    position: fixed;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 8px 12px;  
+}
+
+.bottom-nav{
+    position: fixed;
+    align-items: center;
+    background-color: #fff;
+}
+
+#nav-title{
+    color: #F08080;
+    font-size: 2.5rem;
+}
+
+.navbar-menu{
+    display: flex; 
+    list-style: none;
+}
+
+.navbar-menu li{
+    padding: 8px 12px;
+}
+
+.navbar-menu li a{
+    color: #F08080;
+    font-size: 1.2rem;
+}
+
+.bottom-nav .navbar-menu li a{
+    padding: 10px;
+    margin: 10px;
+    font-size: 1.25rem;
+}

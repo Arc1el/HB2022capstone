@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf8" />
+    <title>Chat</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Hospetter</title>
+
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="./css/styles.css" rel="stylesheet" />
+    
+    <!-- Google Font -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
+    <link href="./css/chat.css" rel="stylesheet" id="bootstrap-css">
+
+        <!-- CSS -->
+        <link href="./css/_hospetter.css" rel="stylesheet" />
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        
+        <!-- Google Font CDN -->
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+        </style>
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+    <!-- Google Font -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    </style>
+</head>
+
+<body style = "background-color: #f8edeb;">
+    <!-- top nav -->
+    <nav class="navbar top-nav fixed-top">
+      <div class="navbar-logo align-middle">
+          <a link="/" id="nav-title" style="text-decoration: none;"><h2>Hospetter</h2></a>
+      </div>
+
+      <ul class="navbar-menu">
+          <% if (user == "N"){ %>
+              <!-- 로그인 안 됨 -->
+              <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+              <li class="nav-item"><a class="nav-link" href="/signup">회원가입</a></li>
+          <% } else { %>
+              <!-- 로그인 됨 -->
+              <% if (user.manager == "Y"){ %>
+              <li class="nav-item"><a class="nav-link" href="/manage">회원관리</a></li>
+              <% } %>
+              <li class="nav-item"><a class="nav-link" href="/upload">업로드</a></li>
+              <li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
+          <% } %>
+      </ul>
+  </nav>
+  <section>
+    <div style="padding-top: 50px;">/</div>
+  <div style="padding: 25px;"></div>
+    <div class="container" style="padding: 10px;">
+        <h3 class=" text-center" style="height: 50px; padding-top: 50px;">  </h3>
+        <div class="messaging">
+              <div class="inbox_msg">
+                <div class="inbox_people">
+                  <div class="headind_srch">
+                    <div class="recent_heading">
+                      <h4>Talk</h4>
+                    </div>
+                    <div class="srch_bar">
+                      <div class="stylish-input-group">
+                        <input type="text" class="search-bar"  placeholder="Search" >
+                        <span class="input-group-addon">
+                        <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+                        </span> </div>
+                    </div>
+                  </div>
+                  <div class="inbox_chat">
+                      <!-- active_chat 속성 넣어주면 채팅 활성화 이팩트 -->
+
+                    <% chatList.contentQueryResult.forEach(function(chat){ %>  
+                      <!-- active_chat -->
+                    <div class="chat_list" onclick="selectChat(this);" id="<%= chat.userid%>">
+                      <div class="chat_people">
+                        <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                        <div class="chat_ib">
+                          <h5><%= chat.name%>  <%if(chat.isdoctor == 'Y'){%>수의사님<%}%></h5>
+                        </div>
+                      </div>
+                    </div>
+                    <%});%>
+
+
+                  </div>
+                </div>
+                <div class="mesgs">
+                  <div class="msg_history" id="dynamicChatDiv">
+
+
+                      <!-- 내가 보낸 메시지 -->
+                      <!-- <div class="outgoing_msg">
+                          <div class="sent_msg">
+                              <p>Apollo University, Delhi, India Test</p>
+                              <span class="time_date"> 11:01 AM    |    Today</span> </div>
+                          </div> -->
+                      <!-- 내가 보낸 메시지 -->
+
+
+                      <!-- 상대가 보낸 메시지 -->
+                      <!-- <div class="incoming_msg">
+                          <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+                          <div class="received_msg">
+                              <div class="received_withd_msg">
+                                  <p>We work directly with our designers and suppliers,
+                                      and sell direct to you, which means quality, exclusive
+                                      products, at a price anyone can afford.</p>
+                                      <span class="time_date"> 11:01 AM    |    Today</span></div>
+                                  </div>
+                              </div> -->
+                      <!-- 상대가 보낸 메시지 -->
+
+
+                  </div>
+                  <div class="type_msg">
+                    <div class="input_msg_write">
+                      <input type="text" class="write_msg" placeholder="Type a message" id="messageTypeInput"/>
+                      <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true" onclick="chatSend();"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </section>
+    <!-- bottom nav -->
+    <nav class="navbar bottom-nav fixed-bottom">
+      <ul class="navbar-menu" style="margin-left: auto; margin-right: auto;">
+          <li><a href="/" style="text-decoration: none;"><i class="bi bi-house-fill"></i></a></li>
+          <li><a href="/monitor" style="text-decoration: none;"><i class="bi bi-heart-pulse-fill"></i></a></li>
+          <!--<li><a href="/reserve" style="text-decoration: none;"><i class="bi bi-calendar-week-fill"></i></a></li>-->
+          <li><a href="/chat" style="text-decoration: none;"><i class="bi bi-person-plus-fill"></i></a></li>
+          <li><a href="/board" style="text-decoration: none;"><i class="bi bi-view-list"></i></a></li>
+      </ul>
+  </nav>
+
+</body>
+<script>
+var curUser = "<%=user.userid%>";
+var curOpponent = "<%=activeChat%>";
+
+  function selectChat(em) {
+    $('.inbox_chat').children('div').each(function(i, e){
+      var tempE = $(e);
+      if (tempE.attr('id') == $(em).attr('id')) {
+        tempE.addClass('active_chat')
+      }else{
+        tempE.removeClass('active_chat')
+      }
+    });
+    //$('#dynamicChatDiv')[0].innerHTML = $(em).attr('id');
+    curOpponent = $(em).attr('id');
+    chatRefresh();
+  }
+
+  function chatRefresh() { 
+            var ajax = $.ajax({ 
+                url: "/chat", 
+                data: "curOpponent=" + curOpponent, 
+                type: 'POST', 
+                success: function (result) { 
+                if (result.code == 0) { 
+                    //성공 result.data.json
+                    //$('#dynamicChatDiv')[0].innerHTML = 
+                    // result.data
+                    // console.log(result.data);
+                    $('#dynamicChatDiv')[0].innerHTML = "";
+                    result.data.forEach(element => {
+                      //message, roomid, time, userid
+                      var tempHTML = $('#dynamicChatDiv')[0].innerHTML;
+                      if (element.userid == curUser) {
+                        //보낸사람
+                        $('#dynamicChatDiv')[0].innerHTML = ""+
+                        " <div class='outgoing_msg'>                                       " +
+                        "     <div class='sent_msg'>                                      " +
+                        "         <p>"+element.message+"</p>             " +
+                        "         <span class='time_date'> "+element.time.substr(0,16)+"</span> " +
+                        "     </div>                                                       " +
+                        " </div>                                                           "+tempHTML;
+                      }else{
+                        //상대
+                        $('#dynamicChatDiv')[0].innerHTML = ""+
+                        " <div class='incoming_msg'>                                                            "+
+                        "     <div class='incoming_msg_img'>                                                "+
+                        "         <img src='https://ptetutorials.com/images/user-profile.png' alt='sunil'>   "+
+                        "     </div>                                                                            "+
+                        "     <div class='received_msg'>                                                        "+
+                        "         <div class='received_withd_msg'>                                          "+
+                        "             <p>"+element.message+"</p>                                                              "+
+                        "                 <span class='time_date'> "+element.time.substr(0,16)+"</span>            "+
+                        "         </div>"+
+                        "     </div>"+
+                        " </div>"+tempHTML;
+                      }
+                    });
+                } else { 
+                  alert(result.msg);
+                } 
+            } 
+        }); 
+    } 
+  function chatSend() { 
+            var ajax = $.ajax({ 
+                url: "/chatSend", 
+                data: "curOpponent=" + curOpponent + "&message=" + $('#messageTypeInput').val(), 
+                type: 'POST', 
+                success: function (result) { 
+                if (result.code == 0) { 
+                  chatRefresh();
+                } else { 
+                    alert(result.msg); 
+                } 
+            } 
+        }); 
+    } 
+
+    // setInterval(function () {
+    //   chatRefresh();
+    // },3000);
+
+</script>
+
+</html>

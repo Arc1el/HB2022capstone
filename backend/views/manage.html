@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>User Manage Page</title>
+  <link href='https://fonts.googleapis.com/css?family=Audiowide|Iceland|Monoton|Pacifico|Press+Start+2P|Vampiro+One'
+    rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Hospetter</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="./favicon.ico" />
+  <!-- Bootstrap icons-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="./css/styles.css" rel="stylesheet" />
+  <!-- Google Font -->
+  <style>
+      @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+  </style>
+</head>
+    <body>
+    <!-- Responsive navbar-->
+    <!-- style="background-color:blue" -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-custom">
+        <div class="container px-5">
+            <a class="navbar-brand" href="/">Hospetter</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
+                    <% if (user == "N"){ %>
+                        <!-- 로그인 안 됨 -->
+                        <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/signup">회원가입</a></li>
+                    <% } else { %>
+                        <!-- 로그인 됨 -->
+                        <% if (user.manager == "Y"){ %>
+                        <li class="nav-item"><a class="nav-link" href="/manage">회원관리</a></li>
+                        <% } %>
+                        <li class="nav-item"><a class="nav-link" href="/upload">업로드</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+  <div class="container">
+    <div class="row">
+      <table class="bordered">
+        <thead>
+          <tr>
+            <th>아이디</th>
+            <th>이름</th>
+            <th>가입일자</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (users.contents.length != 0) { %>
+          <% users.contents.forEach(function(Users){ %>
+          <tr>
+            <td><a href="/manage_detail?userid=<%=Users.userid%>&name=<%=Users.name%>&password=<%=Users.password%>&salt=<%=Users.salt%>&date=<%=Users.date%>"><%=Users.userid%></a></td>
+            <td><a href="/manage_detail?userid=<%=Users.userid%>&name=<%=Users.name%>&password=<%=Users.password%>&salt=<%=Users.salt%>&date=<%=Users.date%>"><%=Users.name%></a></td>
+            <td><a href="/manage_detail?userid=<%=Users.userid%>&name=<%=Users.name%>&password=<%=Users.password%>&salt=<%=Users.salt%>&date=<%=Users.date%>"><%=Users.date%></a></td>
+          </tr>
+          <% }); %>
+          <% } else { %>
+          <tr>
+            <td>등록된 글이 없습니다.</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <% if (users.contents.length != 0) { %>
+  <div style="text-align: center;align-content: center;">
+    <div style="height: 10px;width: 46%;float: left;"></div>
+    <ul class="pagination">
+      <li <%if(users.pageNum == 1){%> class="disabled" <%}else{%>class="waves-effect" <%}%> >
+       <a <%if(users.pageNum > 1){%> href="?pageNum=<%=users.pageNum-1%>" <%}%>>
+         <i class="material-icons">chevron_left</i>
+       </a>
+     </li>
+    <% for(var i=users.pnStart; i<=users.pnEnd; i++){ %> <li <%if(i===users.pageNum){%> class="active"
+        <%}%>><a href="?pageNum=<%=i%>"><%=i%></a></li>
+      <% } %>
+      <li <%if(users.pageNum == users.pnTotal){%> class="disabled" <%}else{%> class="waves-effect" <%}%>>
+       <a <%if(users.pageNum < users.pnTotal){%> href="?pageNum=<%=users.pageNum+1%>" <%}%> class="waves-effect">
+       <i class="material-icons">chevron_right</i>
+     </a>
+   </li>
+   </ul>
+  </div>
+  <% } %> 
+  <center>
+    <div><a href="/">메인페이지</a></div>
+  </center>
+  <footer class="py-5 bg-dark">
+    <div class="container px-5"><p class="m-0 text-center text-white">Copyright &copy; Hospetter 2022</p></div>
+</footer>
+</body> </html>

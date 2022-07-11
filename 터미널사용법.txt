@@ -1,0 +1,41 @@
+터미널 열림         : ctrl + ` 
+서버실행            : server
+홈(캡스톤)디렉토리   : home
+디렉토리            : 백엔드 -> back
+                     프론트 -> front
+vue빌드            : build
+콘솔로그지우기      : clear
+파일다운로드        : 1. 원하는 디렉토리로 이동해서 (ex. cd test1 -> test1으로 이동)
+                     2. wget {URL}
+                     3. 이동했던 디렉토리에 다운로드됨
+
+*** 중요 ***
+백업 : backup
+
+현재 열린 포트 : 8080 - code-server
+                8000 - (https) web-server
+                8888 - phpMyAdmin
+                7777 - vue dev server
+                3306 - db server
+
+                (테스트용 포트 : 사용하고 꼭 close할것!!)
+                7070 - test port
+                7000 - test port
+                
+
+
+** server 실행시 에러나는경우
+-> 이미 누가 실행중임. 메인접속하면 접속됨(아마도?)
+꺼달라고 하거나 터미널에 아래 명령을 붙여넣기 후 재실행
+kill -9 `ps -ef | grep 'app.js' | awk '{print $2}'`
+
+lsof -i tcp:3000
+kill -9 pid
+
+** tmux사용법
+1. 명령 프롬프트에 tmux new -s my_session을 입력
+2. 원하는 프로그램을 실행
+3. Ctrl-b + d 키 시퀀스를 사용하여 세션에서 분리
+4. tmux attach-session -ty_session을 입력하여 Tmux 세션에 다시 연결
+ex) tmux new -s code-server / tmux attch-session -t code-server
+세션닫기 -> Ctr-b + x

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospetter</title>
+
+    <!-- CSS -->
+    <link href="./css/_hospetter.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Google Font CDN -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+</head>
+<body style = "background-color: #f8edeb;">
+    <!-- top nav -->
+    <nav class="navbar top-nav fixed-top">
+        <div class="navbar-logo align-middle">
+            <a id="nav-title" href="/" style="text-decoration: none;"><h2>Hospetter</h2></a>
+        </div>
+
+        <ul class="navbar-menu">
+            <% if (user == "N"){ %>
+                <!-- 로그인 안 됨 -->
+                <li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+                <li class="nav-item"><a class="nav-link" href="/signup">회원가입</a></li>
+            <% } else { %>
+                <!-- 로그인 됨 -->
+                <% if (user.manager == "Y"){ %>
+                <li class="nav-item"><a class="nav-link" href="/manage">회원관리</a></li>
+                <% } %>
+                <li class="nav-item"><a class="nav-link" style="text-decoration: none;" href="/info"><i class="bi bi-emoji-kiss"></i></a></li>
+                <li class="nav-item"><a class="nav-link" href="/upload">업로드</a></li>
+                <li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
+            <% } %>
+        </ul>
+    </nav>
+
+        <!-- Features section-->
+        <section class="bg-custom-light py-5 border-bottom" id="features" style="padding-top:5%;">
+            <div class="container px-5 my-5" style="padding-top: 20%;">
+                <div class="row gx-5">
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h2 class="h4 fw-bolder">
+                            <p>
+                                <br>우리 아이에게 궁금한 점을
+                                <br>하스펫터 수의사에게 물어보세요!
+                            </p>
+
+                            <input type="text" id="name" class="form-control my-input" name="name" placeholder="냥이가 머리끈을 먹었어요."
+                                style = "display: inline; width: 55%; font-size: 1rem;">
+
+                            <button type="submit" id="send-button" class="btn btn-block send-button tx-tfm" 
+                                style = "display: inline; width:30%; font-size: 1rem;">상담하기</button>
+                        </h2>
+                    </div>
+                    
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h2 class="h4 fw-bolder">
+                            <a href="/monitoring" style="text-decoration: none; color: #F08080;">
+                                <i class="bi bi-clipboard2-pulse" style="font-size: 6rem; color: #F08080; display: inline-block; width: 25%;"></i></i></a>
+                            <p style="display: inline-block; width: auto"> 
+                                <br>우리 아이 상태가 궁금하다면
+                                <br>모니터링 데이터 확인!
+                                <br><a href="/monitor" style="text-decoration: none; color: #F08080;"><i class="bi bi-arrow-left-circle"></a></i>
+                            </p>
+                        </h2>
+                    </div>
+
+                    <div class="col-lg-4 mb-5 mb-lg-0">
+                        <h2 class="h4 fw-bolder">
+                            <p>
+                                <br>우리 아이의 정보를
+                                <br>디바이스 등록과 함께 확인하세요!
+                            </p>
+
+                            <button type="submit" id="send-button" class="btn btn-block send-button tx-tfm" 
+                                style = "display: inline; width:30%; font-size: 1rem;">등록하기</button>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- bottom nav -->
+    <nav class="navbar bottom-nav fixed-bottom">
+        <ul class="navbar-menu" style="margin-left: auto; margin-right: auto;">
+            <li><a href="/" style="text-decoration: none;"><i class="bi bi-house-fill"></i></a></li>
+            <li><a href="/monitor" style="text-decoration: none;"><i class="bi bi-heart-pulse-fill"></i></a></li>
+            <!--<li><a href="/reserve" style="text-decoration: none;"><i class="bi bi-calendar-week-fill"></i></a></li>-->
+            <li><a href="/chat" style="text-decoration: none;"><i class="bi bi-person-plus-fill"></i></a></li>
+            <li><a href="/board" style="text-decoration: none;"><i class="bi bi-view-list"></i></a></li>
+        </ul>
+    </nav>
+
+    
+</body>
+</html>

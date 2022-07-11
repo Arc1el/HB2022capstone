@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospetter</title>
+
+    <!-- CSS -->
+    <link href="../css/_hospetter.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Google Font CDN -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+</head>
+<body style = "background-color: #f8edeb;">
+    <!-- top nav -->
+    <nav class="navbar top-nav fixed-top">
+        <div class="navbar-logo align-middle">
+            <a id="nav-title" href="/" style="text-decoration: none;"><h2>Hospetter</h2></a>
+        </div>
+
+        <ul class="navbar-menu">
+            <li><a href="/chat">
+                <i class="bi bi-bell-fill"></i>
+            </a></li>
+            <li><a href="/login">
+                <i class="bi bi-person-circle align-middle"></i>
+            </a></li>
+        </ul>
+    </nav>
+
+        <!-- Features section-->
+        <section class="bg-custom-light py-5" id="features">
+            <div class="container px-5 my-5">
+                <div class="row gx-5">
+                    <h1 style="font-size:3.5rem; color: #F08080;">
+                        제목: 
+                        <input type="text" class="form-control my-input" name="board-title" id="board-title" placeholder="<%=Users.title%>">
+                    </h1>
+                </div>
+
+                <div class="container" style="height: 100%; font-size: 2.25rem;">
+                    내용:
+                    <input type="text" class="form-control my-input" name="board-content" id="board-content" placeholder="<%=Users.content%>">
+                </div>
+
+                <div class="container" style="padding: 5%;"></div>
+
+                <div class="container" style="font-size: 1rem;">
+                    작성일자: <%=Users.date%>
+                </div>
+
+                <div class="text-center">
+                    <button class="login100-form-btn" type="button" onclick="correct();">
+                        수정하기
+                    </button>
+                </div>
+        </section>
+
+    <!-- bottom nav -->
+    <nav class="navbar bottom-nav fixed-bottom">
+        <ul class="navbar-menu" style="margin-left: auto; margin-right: auto;">
+            <li><a href="/" style="text-decoration: none;"><i class="bi bi-house-fill"></i></a></li>
+            <li><a href="/monitor" style="text-decoration: none;"><i class="bi bi-heart-pulse-fill"></i></a></li>
+            <!--<li><a href="/reserve" style="text-decoration: none;"><i class="bi bi-calendar-week-fill"></i></a></li>-->
+            <li><a href="/chat" style="text-decoration: none;"><i class="bi bi-person-plus-fill"></i></a></li>
+            <li><a href="/board" style="text-decoration: none;"><i class="bi bi-view-list"></i></a></li>
+        </ul>
+    </nav>
+</body>
+<script type="text/javascript">
+    function correct() { 
+        var param = {};
+
+        param.title = $('#board-title').val();
+        param.content = $('#board-content').val();
+
+        var ajax = $.ajax({ 
+            url: "/board_correct", 
+            data: param, 
+            type: 'POST', 
+            dataType: "JSON", 
+            success: function (result) { 
+                alert(result.msg); 
+                location.href = "/board_detail"; 
+                } 
+            }); 
+        }
+</script>
+</html>

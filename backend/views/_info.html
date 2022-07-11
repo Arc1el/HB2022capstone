@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospetter</title>
+
+    <!-- CSS -->
+    <link href="./css/_hospetter.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Google Font CDN -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+</head>
+<body style = "background-color: #f8edeb;">
+    <!-- top nav -->
+    <nav class="navbar top-nav fixed-top">
+        <div class="navbar-logo align-middle">
+            <a id="nav-title" href="/" style="text-decoration: none;"><h2>Hospetter</h2></a>
+        </div>
+
+        <ul class="navbar-menu">
+            <li><a href="/chat">
+                <i class="bi bi-bell-fill"></i>
+            </a></li>
+            <li><a href="/login">
+                <i class="bi bi-person-circle align-middle"></i>
+            </a></li>
+        </ul>
+    </nav>
+
+    <section class="bg-custom-light py-5 border-bottom" style = "height:100%;" id="features">
+        <div style="padding: 1.5%;"></div>
+
+        <div class="container" style="padding-top: 1%; text-align: center;">
+            <h1 style="color:#F08080; font-size: 3.5rem;">Information</h1>
+        </div>
+
+        <div style="text-align: center; padding-top: 5%; padding-bottom: 5%;">
+            <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                ID: <%=user.userid%>
+            </div>
+    
+            <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                이름: <span style="color:#F08080;"><%=user.name%></span>님
+            </div>
+    
+            <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                가입날짜: <%=user.date%> 
+            </div>
+            <%if(pet !== undefined){%>
+            <!-- 팻 -->
+                <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                    <i class="bi bi-heart-fill"></i> 반려동물: <span style="color:#F08080;"><%=pet.petid%></span>님 <i class="bi bi-heart-fill"></i>
+                </div>
+                
+                <div class="container" style="padding-top: 3%;"></div>
+
+                <hr>
+
+                <div class="container" style="font-size: 2rem; padding-top: 2%;padding-bottom: 2%;">
+                    <i class="bi bi-info-circle-fill"></i> 반려동물의 최신 상태
+                </div>
+
+                <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                    <i class="bi bi-thermometer-high"></i> 온도: <%=pet.temp%>
+                </div>
+
+                <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                    <i class="bi bi-flower3"></i> 활동량: <%=pet.temp%>
+                </div>
+
+                <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                    <i class="bi bi-heart-pulse-fill"></i> ECG: <%=pet.temp%>
+                </div>
+            <!-- 팻 -->
+            <%} else {%>
+                <div class="container" style="font-size: 2rem; padding-bottom: 1%;">
+                    반려동물 없음
+                </div>
+
+                <div class="container">
+                    <a href="/registpet" type="button" id="send-button" class="btn btn-block send-button tx-tfm" style="width: 10%; margin-left: auto; margin-right: auto;">등록하기</a>
+                </div>
+            <%}%>
+        </div>
+
+
+    </section>
+
+
+    <!-- bottom nav -->
+    <nav class="navbar bottom-nav fixed-bottom">
+        <ul class="navbar-menu" style="margin-left: auto; margin-right: auto;">
+            <li><a href="/" style="text-decoration: none;"><i class="bi bi-house-fill"></i></a></li>
+            <li><a href="/monitor" style="text-decoration: none;"><i class="bi bi-heart-pulse-fill"></i></a></li>
+            <!--<li><a href="/reserve" style="text-decoration: none;"><i class="bi bi-calendar-week-fill"></i></a></li>-->
+            <li><a href="/chat" style="text-decoration: none;"><i class="bi bi-person-plus-fill"></i></a></li>
+            <li><a href="/board" style="text-decoration: none;"><i class="bi bi-view-list"></i></a></li>
+        </ul>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,19 @@
+회원가입기능(성공) -> 사용안함. backup_0124
+https://doncolmi.github.io/testProject1/
+
+회원가입/로그인/로그아웃/세션기능(성공)
+https://askforyou.tistory.com/30
+
+vue + express 연동(성공)
+https://www.hanumoka.net/2018/11/13/vue-20181113-vue-how-to-make-vue-express-project/
+
+webRTC
+https://www.youtube.com/watch?v=JhyY8LdAQHU&ab_channel=CodingWithChaim 
+
+mediasoup sfu webtrc video rooms
+https://github.com/Dirvann/mediasoup-sfu-webrtc-video-rooms
+
+https://kamang-it.tistory.com/entry/JavaScriptVuevue30-cli%EC%97%90%EC%84%9C-%ED%8E%98%EC%9D%B4%EC%A7%80-%EB%8B%A8%EC%9C%84%EB%A1%9C-%EC%AA%BC%EA%B0%9C%EC%84%9C-%EB%B9%8C%EB%93%9C%ED%95%98%EA%B8%B0
+
+[ Node.js: Web socket 통신 ]
+https://curryyou.tistory.com/348

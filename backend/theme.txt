@@ -1,0 +1,19 @@
+
+- 사용한 색상 팔레트
+https://coolors.co/palette/f08080-f4978e-f8ad9d-fbc4ab-ffdab9
+
+- 참고한 어플리케이션(웹 클론)
+Petdoc
+
+- _lists.html
+<% data.forEach(function (item, index) { %>
+    <tr>
+        <td><%= item.id %></td>
+        <td><%= item.name %></td>
+        <td><%= item.date %></td>
+        <td><a href="/delete/<%= item.id %>">삭제</a></td>
+        <td><a href="/edit/<%= item.id %>">편집</a></td>
+    </tr>
+<% }); %>
+
+

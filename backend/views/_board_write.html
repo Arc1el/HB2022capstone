@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Hospetter</title>
+
+    <!-- CSS -->
+    <link href="../css/_hospetter.css" rel="stylesheet" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <!-- Google Font CDN -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+    
+</head>
+<body style = "background-color: #f8edeb;">
+    <!-- top nav -->
+    <nav class="navbar top-nav fixed-top">
+        <div class="navbar-logo align-middle">
+            <a id="nav-title" href="/" style="text-decoration: none;"><h2>Hospetter</h2></a>
+        </div>
+
+        <ul class="navbar-menu">
+            <li><a href="/chat">
+                <i class="bi bi-bell-fill"></i>
+            </a></li>
+            <li><a href="/login">
+                <i class="bi bi-person-circle align-middle"></i>
+            </a></li>
+        </ul>
+    </nav>
+
+        <!-- Features section-->
+        <section class="bg-custom-light py-5 border-bottom" id="features">
+            <div class="container px-5 my-5">
+                <form action="post">
+                    제목:
+                    <div class="wrap-input100 validate-input m-b-16" data-validate = "제목은 필수입니다!">
+						<input style="width:100%;" class="input100" id="board-title" type="text" placeholder="제목을 입력하시오.">
+						<span class="focus-input100"></span>
+					</div>
+
+                    내용:
+                    <div class="wrap-input100 validate-input m-b-32">
+						<input style="width:100%; height:500px;"class="input100" id="board-content" type="text" placeholder="내용을 입력하시오.">
+						<span class="focus-input100"></span>
+					</div>
+
+                    <div class="container-login100-form-btn m-t-17">
+						<button 
+                        style="background: #F08080; width:100%; font-weight: 600; color:#fff; padding: 8px 25px;" 
+                        class="login100-form-btn" type="button" onclick="write();">
+							작성하기
+						</button>
+					</div>
+                </form>
+            </div>
+        </section>
+
+    <!-- bottom nav -->
+    <nav class="navbar bottom-nav fixed-bottom">
+        <ul class="navbar-menu" style="margin-left: auto; margin-right: auto;">
+            <li><a href="/" style="text-decoration: none;"><i class="bi bi-house-fill"></i></a></li>
+            <li><a href="/monitor" style="text-decoration: none;"><i class="bi bi-heart-pulse-fill"></i></a></li>
+            <!--<li><a href="/reserve" style="text-decoration: none;"><i class="bi bi-calendar-week-fill"></i></a></li>-->
+            <li><a href="/chat" style="text-decoration: none;"><i class="bi bi-person-plus-fill"></i></a></li>
+            <li><a href="/board" style="text-decoration: none;"><i class="bi bi-view-list"></i></a></li>
+        </ul>
+    </nav>
+
+    <script type="text/javascript">
+        function write() { 
+            var param = {};
+    
+            param.title = $("#board-title").val();
+            param.content = $("#board-content").val();
+
+            // set date
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = ('0' + (today.getMonth() + 1)).slice(-2);
+            var day = ('0' + today.getDate()).slice(-2);
+
+            var dateString = year + '-' + month  + '-' + day;
+            console.log(dateString);
+
+            param.date = dateString.val();
+
+            var ajax = $.ajax({ 
+                url: "/board_write", 
+                data: param, 
+                type: 'POST', 
+                dataType: "JSON", 
+                success: function (result) { 
+                    alert(result.msg);
+                    location.href = "/board_detail"; 
+                    } 
+                }); 
+            }
+    </script>
+</body>
+</html>

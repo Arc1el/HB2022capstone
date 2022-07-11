@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>upload-success</title>
+    
+  <!-- Google Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+  </style>
+
+    <link href="./css/upload.css" rel="stylesheet" />
+</head>
+<body>
+    <h1 id="title">Success!</h1>
+
+    <% if(file){ %>
+    <pre><%=JSON.stringify(file, null, 2)%></pre>
+    <% }%>
+
+    <% if(files){ %>
+    <pre><%=JSON.stringify(files, null, 2)%></pre>
+    <% }%>
+
+    <a href='/' id="title">Back</a>
+</body>
+</html>

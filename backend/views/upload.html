@@ -1,0 +1,39 @@
+<html>
+
+<head>
+  <title>upload</title>
+
+  <!-- Google Font -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+  </style>
+
+<link href="./css/upload.css" rel="stylesheet" />
+</head>
+
+<body>
+  <h1 id="title">File upload</h1>
+
+<div id="board">
+  <hr>
+  <h3 id="upload_text">Single File Upload (Keep Original Filename)</h3>
+  <form action="/uploadFileWithOriginalFilename" enctype="multipart/form-data" method="post">
+    <input id="file" type="file" name="attachment">
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+
+  <br>
+
+  <hr>
+  <h3 id="upload_text">Multiple File Upload (Keep Original Filename)</h3>
+  <form action="/uploadFilesWithOriginalFilename" enctype="multipart/form-data" method="post">
+    <input id="file" type="file" name="attachments" multiple>
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </form>
+
+  <hr>
+</div>
+
+</body>
+
+</html>
