@@ -15,7 +15,7 @@ router.post('/', function(req, res, next) {
   res.send("ok");
 });
 
-
+//api for sensordata
 router.post('/sensor', function(req, res) {
   //(parse) arduino Json -> node.js Json
   jsondata = JSON.stringify(req.body);
@@ -39,10 +39,10 @@ function send_query(sql){
   try{
     connection.query(sql, (error, rows, fields) => {
       if (error) {
-        console.log(error);
+        console.log("sorry, i can't send query");
       }
       else{
-
+        //sending query successfully
       } 
     });
   }catch (e){
@@ -61,6 +61,7 @@ function get_date_string(){
   seconds = data.getSeconds().toString().padStart(2, '0');
   millis = data.getMilliseconds();
 
+  //date_string YY-MM-DD_hh:mm:ss:milis
   date_string = year + "-" + month + "-" + date + "_" 
   + hours + ":" + minutes + ":" + seconds + ":" + millis;
 
@@ -68,16 +69,20 @@ function get_date_string(){
 }
 
 function save_sensor_data(data){
+  //sensor datas
   sensor01 = data.SENSOR.SENSOR01;
   sensor02 = data.SENSOR.SENSOR02;
   sensor03 = data.SENSOR.SENSOR03;
   sensor04 = data.SENSOR.SENSOR04;
+  
+  //make sensor array using for loop
   senarr = [sensor01, sensor02, sensor03, sensor04];
-  console.log("senarr = ", senarr);
 
   for (sen in senarr){
+    //sensor data, type;
     type = senarr[sen].type;
     data = senarr[sen].data;
+
     try{
       //set date_string
       date_string = get_date_string();
@@ -86,18 +91,21 @@ function save_sensor_data(data){
       //set directory path for saving json data
       dir = "./sensordata/" + type + "/";
 
+      //if not exist the directory
       try{
         fs.mkdir(dir, {recursive: true}, err => {});
       }catch (e){
-        throw e;
+        console.log("directory is not exist. so i made it!, but data isn't saved");
       }
-      fs.writeFileSync(dir + filename + ".json", JSON.stringify(senarr[sen]));
 
+      //saving datas
+      fs.writeFileSync(dir + filename + ".json", JSON.stringify(senarr[sen]));
       sql = "insert into sensor(sensor_type, date, filename)values('";
       sql += type + "','" + date_string + "','" + filename + ".json')";
+      //sending query
       send_query(sql);
     }catch (e){
-      console.log(e);
+      console.log("sorry, i can't read sensor data!");
     }
   }
 }
