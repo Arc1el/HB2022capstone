@@ -5,6 +5,10 @@
 #include <Thread.h>
 #include <ThreadController.h>
 
+//setting thread
+ThreadController controll = ThreadController();
+Thread sensor_thread = Thread();
+
 //setting ssid, password
 char ssid[] = "DfXLabPros_2.4G";
 char pass[] = "thdtnrms1!";
@@ -16,38 +20,16 @@ int status = WL_IDLE_STATUS;
 //api server address
 char server[] = "192.168.45.83";
 
+//testdata
+int test_int = 0;
+
 WiFiClient client;
 String sensor_type;
 int sensor_data;
 
+int test_data_arr[] = {1,2,3,4,5};
 
-
-void setup() {
-  Serial.begin(9600);
-
-  //wifi module initiation
-  if (WiFi.status() == WL_NO_MODULE) {
-    Serial.println("Communication with WiFi module failed!");
-    // don't continue
-    while (true);
-  }
-
-  //if wifi is connected
-  while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    status = WiFi.begin(ssid, pass);
-
-    delay(5000);
-  }
-  Serial.println("Connected to wifi");
-  printWifiStatus();
-
-  sensor_type = "SENSOR_TYPE";
-  sensor_data = 30;
-}
-
-void loop() {
+void sensorCallback(){
   String jsondata = "";
   
   const size_t capacity = JSON_OBJECT_SIZE(1) + 3*JSON_OBJECT_SIZE(2);
@@ -58,7 +40,7 @@ void loop() {
   
   JsonObject& SENSOR_SENSOR01 = SENSOR.createNestedObject("SENSOR01");
   SENSOR_SENSOR01["type"] = "ecg";
-  SENSOR_SENSOR01["data"] = 123;
+  SENSOR_SENSOR01["data"] = test_data_arr;
   
   JsonObject& SENSOR_SENSOR02 = SENSOR.createNestedObject("SENSOR02");
   SENSOR_SENSOR02["type"] = "temp";
@@ -101,8 +83,40 @@ void loop() {
     Serial.println("disconnecting from server.");
     client.stop();
   }
-  delay(10000);
-  
+}
+
+void setup() {
+  Serial.begin(9600);
+
+  //wifi module initiation
+  if (WiFi.status() == WL_NO_MODULE) {
+    Serial.println("Communication with WiFi module failed!");
+    // don't continue
+    while (true);
+  }
+
+  //if wifi is connected
+  while (status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    status = WiFi.begin(ssid, pass);
+
+    delay(5000);
+  }
+  Serial.println("Connected to wifi");
+  printWifiStatus();
+
+  sensor_type = "SENSOR_TYPE";
+  sensor_data = 30;
+
+  //thread setup
+  sensor_thread.onRun(sensorCallback);
+  sensor_thread.setInterval(10000);
+  controll.add(&sensor_thread);
+}
+
+void loop() {
+  controll.run();
 }
 
 void printWifiStatus() {
@@ -112,9 +126,4 @@ void printWifiStatus() {
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
   Serial.println(ip);
-
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
 }

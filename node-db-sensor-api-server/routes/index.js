@@ -107,13 +107,14 @@ function save_sensor_data(data){
       try{
         fs.mkdir(dir, {recursive: true}, err => {});
       }catch (e){
-        console.log("directory is not exist. so i made it!, but data isn't saved");
+        console.log("mkdir failed");
       }
 
       //saving datas
       fs.writeFileSync(dir + filename + ".json", JSON.stringify(senarr[sen]));
       sql = "insert into sensor(sensor_type, date, filename)values('";
       sql += type + "','" + date_string + "','" + filename + ".json')";
+
       //sending query
       send_query(sql);
     }catch (e){
