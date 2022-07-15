@@ -17,28 +17,74 @@ router.post('/', function(req, res, next) {
 
 
 router.post('/sensor', function(req, res) {
+  //(parse) arduino Json -> node.js Json
   jsondata = JSON.stringify(req.body);
   jsondata = jsondata.replace(/\\/g, "");
   jsondata = jsondata.slice(2, -5);
   jsondata = JSON.parse(jsondata);
   const {sensor_type, sensor_data} = jsondata;
 
-  nowdate = new Date();
-  year = nowdate.getFullYear().toString().padStart(4, '0');
-  month = (nowdate.getMonth()+1).toString().padStart(2, '0');
-  day = nowdate.getDate().toString().padStart(2, '0');
-  hours = nowdate.getHours().toString().padStart(2, '0');
-  minutes = nowdate.getMinutes().toString().padStart(2, '0');
-  date_str = year + "-" + month + "-" + day + " " + hours;
-  filename = sensor_type + "_" + nowdate;
-  dir = "./sensordata/" + sensor_type + "/";
+  //set date_string
+  date_string = get_date_string();
 
-  fs.existsSync(dir) && fs.mkdir(dir, {recursive: true}, err => {});
-  fs.writeFileSync(dir + filename + ".json", JSON.stringify(jsondata));
+  //set file name. ex) ECG_DATA_2022-07-25_09:59:26:123
+  filename = sensor_type + "_" + date_string;
+
+  //set directory path for saving json data
+  dir = "./sensordata/" + sensor_type + "/";
+  
+  //if directory not exist
+  try{
+    fs.mkdir(dir, {recursive: true}, err => {});
+  }catch (e){
+    throw e;
+  }
+  
+  //Saving json data in path and Log to dastabase server
+  try{
+    fs.writeFileSync(dir + filename + ".json", JSON.stringify(jsondata));
+
+    sql = "insert into sensor(sensor_type, date, filename)values('";
+    sql += sensor_type + "','" + date_string + "','" + filename + "')";
+    send_query(sql);
+  }catch (e){
+  }
 
   res.send("ok");
 });
 
+//Sending the query function
+function send_query(sql){
+  try{
+    connection.query(sql, (error, rows, fields) => {
+      if (error) {
+        console.log(error);
+      }
+      else{
+
+      } 
+    });
+  }catch (e){
+    console.log("Can't save the Sensor data");
+  }
+};
+
+//Making date string function
+function get_date_string(){
+  data = new Date();
+  year = data.getFullYear();
+  month = (data.getMonth() + 1).toString().padStart(2, "0");
+  date = data.getDate();
+  hours = data.getHours();
+  minutes = data.getMinutes();
+  seconds = data.getSeconds().toString().padStart(2, '0');
+  millis = data.getMilliseconds();
+
+  date_string = year + "-" + month + "-" + date + "_" 
+  + hours + ":" + minutes + ":" + seconds + ":" + millis;
+
+  return date_string;
+}
 
 module.exports = router;
 

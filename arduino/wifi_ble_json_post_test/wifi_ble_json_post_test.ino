@@ -7,7 +7,7 @@ char ssid[] = "DfXLabPros_2.4G";
 char pass[] = "thdtnrms1!";
 int keyIndex = 0;
 int status = WL_IDLE_STATUS;
-char server[] = "192.168.45.25";
+char server[] = "192.168.45.83";
 
 WiFiClient client;
 String sensor_type;
@@ -34,7 +34,6 @@ void setup() {
 
   sensor_type = "SENSOR_TYPE";
   sensor_data = 30;
-  filename = "test_data";
 }
 
 void loop() {
@@ -56,13 +55,13 @@ void loop() {
     client.println("Host: http://192.168.45.25");
     client.println("Content-Type: application/x-www-form-urlencoded");
     client.print("Content-Length: ");
-    client.println(json.length());
+    client.println(jsondata.length());
     client.println();
-    client.print(json);
+    client.print(jsondata);
     client.println();
 
     Serial.println("[Sended Data]");
-    Serial.println(json);
+    Serial.println(jsondata);
   }
   
   while (client.available()) {
