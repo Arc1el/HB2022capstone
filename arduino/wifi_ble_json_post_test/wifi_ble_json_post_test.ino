@@ -37,16 +37,40 @@ void setup() {
 }
 
 void loop() {
-  String postData = "test";
-  
   String jsondata = "";
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& json = jsonBuffer.createObject();
-
-  json["sensor_type"] = sensor_type;
+  
+  //StaticJsonBuffer<200> jsonBuffer;
+  /*
+  json["sensor_type"] = "ecg";
   json["sensor_data"] = sensor_data;
   json.printTo(jsondata);
+  */
+  //JsonObject& root = jsonBuffer.createObject();
 
+  const size_t capacity = JSON_OBJECT_SIZE(1) + 3*JSON_OBJECT_SIZE(2);
+  DynamicJsonBuffer jsonBuffer(capacity);
+  
+  JsonObject& root = jsonBuffer.createObject();
+  
+  JsonObject& SENSOR = root.createNestedObject("SENSOR");
+  
+  JsonObject& SENSOR_SENSOR01 = SENSOR.createNestedObject("SENSOR01");
+  SENSOR_SENSOR01["type"] = "ecg";
+  SENSOR_SENSOR01["data"] = 123;
+  
+  JsonObject& SENSOR_SENSOR02 = SENSOR.createNestedObject("SENSOR02");
+  SENSOR_SENSOR02["type"] = "temp";
+  SENSOR_SENSOR02["data"] = 456;
+
+  JsonObject& SENSOR_SENSOR03 = SENSOR.createNestedObject("SENSOR03");
+  SENSOR_SENSOR03["type"] = "accel";
+  SENSOR_SENSOR03["data"] = 789;
+  
+  JsonObject& SENSOR_SENSOR04 = SENSOR.createNestedObject("SENSOR04");
+  SENSOR_SENSOR04["type"] = "gps";
+  SENSOR_SENSOR04["data"] = 042;
+  root.printTo(jsondata);
+  
   
   Serial.println("\nStarting connection to server...");
   if (client.connect(server, 80)) {
@@ -74,7 +98,7 @@ void loop() {
     Serial.println("disconnecting from server.");
     client.stop();
   }
-  delay(5000);
+  delay(10000);
 }
 
 

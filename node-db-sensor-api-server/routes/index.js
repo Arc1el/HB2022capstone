@@ -21,33 +21,14 @@ router.post('/sensor', function(req, res) {
   jsondata = JSON.stringify(req.body);
   jsondata = jsondata.replace(/\\/g, "");
   jsondata = jsondata.slice(2, -5);
+  console.log(jsondata);
   jsondata = JSON.parse(jsondata);
-  const {sensor_type, sensor_data} = jsondata;
-
-  //set date_string
-  date_string = get_date_string();
-
-  //set file name. ex) ECG_DATA_2022-07-25_09:59:26:123
-  filename = sensor_type + "_" + date_string;
-
-  //set directory path for saving json data
-  dir = "./sensordata/" + sensor_type + "/";
-  
-  //if directory not exist
-  try{
-    fs.mkdir(dir, {recursive: true}, err => {});
-  }catch (e){
-    throw e;
-  }
   
   //Saving json data in path and Log to dastabase server
   try{
-    fs.writeFileSync(dir + filename + ".json", JSON.stringify(jsondata));
-
-    sql = "insert into sensor(sensor_type, date, filename)values('";
-    sql += sensor_type + "','" + date_string + "','" + filename + "')";
-    send_query(sql);
+    save_sensor_data(jsondata);
   }catch (e){
+    console.log("cant't save data. error : ", e);
   }
 
   res.send("ok");
@@ -84,6 +65,41 @@ function get_date_string(){
   + hours + ":" + minutes + ":" + seconds + ":" + millis;
 
   return date_string;
+}
+
+function save_sensor_data(data){
+  sensor01 = data.SENSOR.SENSOR01;
+  sensor02 = data.SENSOR.SENSOR02;
+  sensor03 = data.SENSOR.SENSOR03;
+  sensor04 = data.SENSOR.SENSOR04;
+  senarr = [sensor01, sensor02, sensor03, sensor04];
+  console.log("senarr = ", senarr);
+
+  for (sen in senarr){
+    type = senarr[sen].type;
+    data = senarr[sen].data;
+    try{
+      //set date_string
+      date_string = get_date_string();
+      //set file name. ex) ECG_DATA_2022-07-25_09:59:26:123
+      filename = type + "_" + date_string;
+      //set directory path for saving json data
+      dir = "./sensordata/" + type + "/";
+
+      try{
+        fs.mkdir(dir, {recursive: true}, err => {});
+      }catch (e){
+        throw e;
+      }
+      fs.writeFileSync(dir + filename + ".json", JSON.stringify(senarr[sen]));
+
+      sql = "insert into sensor(sensor_type, date, filename)values('";
+      sql += type + "','" + date_string + "','" + filename + ".json')";
+      send_query(sql);
+    }catch (e){
+      console.log(e);
+    }
+  }
 }
 
 module.exports = router;
