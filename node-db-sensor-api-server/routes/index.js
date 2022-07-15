@@ -15,13 +15,24 @@ router.post('/', function(req, res, next) {
   res.send("ok");
 });
 
-//api for sensordata
-router.post('/sensor', function(req, res) {
+router.get("/api/recent_data", async function(req, res, next) {
+  sql = "select * from sensor order by date desc limit 5";
+  data = await send_query(sql);
+  res.send(data);
+});
+
+router.post("/api/sql", async function(req, res, next) {
+  sql = req.body.sql;
+  data = await send_query(sql);
+  res.send(data);
+});
+
+//api for getting sensordata
+router.post('/api/get_sensor_data', function(req, res) {
   //(parse) arduino Json -> node.js Json
   jsondata = JSON.stringify(req.body);
   jsondata = jsondata.replace(/\\/g, "");
   jsondata = jsondata.slice(2, -5);
-  console.log(jsondata);
   jsondata = JSON.parse(jsondata);
   
   //Saving json data in path and Log to dastabase server
@@ -36,18 +47,19 @@ router.post('/sensor', function(req, res) {
 
 //Sending the query function
 function send_query(sql){
-  try{
-    connection.query(sql, (error, rows, fields) => {
-      if (error) {
-        console.log("sorry, i can't send query");
-      }
-      else{
-        //sending query successfully
-      } 
-    });
-  }catch (e){
-    console.log("Can't save the Sensor data");
-  }
+  return new Promise((resolve, reject) => {
+    try{
+      connection.query(sql, (error, datas, fields) => {
+        if (error) {
+          reject(error);
+          console.log("sorry, i can't send query");
+        }
+        else{
+          resolve(datas);
+        } 
+      });
+    }catch{}
+  })
 };
 
 //Making date string function

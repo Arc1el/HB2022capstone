@@ -3,10 +3,15 @@
 #include <ArduinoBLE.h>
 #include <ArduinoJson.h>
 
+//setting ssid, password
 char ssid[] = "DfXLabPros_2.4G";
 char pass[] = "thdtnrms1!";
 int keyIndex = 0;
+
+//setting status
 int status = WL_IDLE_STATUS;
+
+//api server address
 char server[] = "192.168.45.83";
 
 WiFiClient client;
@@ -16,12 +21,14 @@ int sensor_data;
 void setup() {
   Serial.begin(9600);
 
+  //wifi module initiation
   if (WiFi.status() == WL_NO_MODULE) {
     Serial.println("Communication with WiFi module failed!");
     // don't continue
     while (true);
   }
 
+  //if wifi is connected
   while (status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
@@ -39,14 +46,6 @@ void setup() {
 void loop() {
   String jsondata = "";
   
-  //StaticJsonBuffer<200> jsonBuffer;
-  /*
-  json["sensor_type"] = "ecg";
-  json["sensor_data"] = sensor_data;
-  json.printTo(jsondata);
-  */
-  //JsonObject& root = jsonBuffer.createObject();
-
   const size_t capacity = JSON_OBJECT_SIZE(1) + 3*JSON_OBJECT_SIZE(2);
   DynamicJsonBuffer jsonBuffer(capacity);
   
@@ -75,8 +74,8 @@ void loop() {
   Serial.println("\nStarting connection to server...");
   if (client.connect(server, 80)) {
     Serial.println("connected to server");
-    client.println("POST /sensor HTTP/1.1");
-    client.println("Host: http://192.168.45.25");
+    client.println("POST /api/get_sensor_data HTTP/1.1");
+    client.println("Host: ArduinoNanoIoT33");
     client.println("Content-Type: application/x-www-form-urlencoded");
     client.print("Content-Length: ");
     client.println(jsondata.length());
