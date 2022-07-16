@@ -29,11 +29,8 @@ router.post("/api/sql", async function(req, res, next) {
 
 //api for getting sensordata
 router.post('/api/get_sensor_data', function(req, res) {
-  //(parse) arduino Json -> node.js Json
-  jsondata = JSON.stringify(req.body);
-  jsondata = jsondata.replace(/\\/g, "");
-  jsondata = jsondata.slice(2, -5);
-  jsondata = JSON.parse(jsondata);
+  //reqbody : Ardino json
+  jsondata = req.body;
   
   //Saving json data in path and Log to dastabase server
   try{
@@ -81,7 +78,7 @@ function get_date_string(){
 }
 
 function save_sensor_data(data){
-  //sensor datas
+  //sensor datasclea
   sensor01 = data.SENSOR.SENSOR01;
   sensor02 = data.SENSOR.SENSOR02;
   sensor03 = data.SENSOR.SENSOR03;
