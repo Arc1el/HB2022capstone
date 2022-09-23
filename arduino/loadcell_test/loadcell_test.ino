@@ -7,6 +7,7 @@ const int LOADCELL_SCK_PIN = 3;
 HX711 scale;
 int prev_status;
 int now_status;
+int last_reading;
 int count;
 
 void setup() {
@@ -15,14 +16,16 @@ void setup() {
   count = 0;
   prev_status = 0;
   now_status = 0;
+  last_reading = 0;
 }
 
 void loop() {
 
   if (scale.is_ready()) {
     long reading = scale.read();
+    last_reading = reading;
     
-    if (reading < -100000) {
+    if (last_reading > reading + 100000) {
       prev_status = now_status;
       now_status = 1;
       Serial.println(reading);
