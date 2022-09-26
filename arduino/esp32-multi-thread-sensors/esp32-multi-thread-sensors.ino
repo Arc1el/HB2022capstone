@@ -4,6 +4,7 @@
 #include <HttpClient.h>
 #include "soc/rtc.h"
 #include "HX711.h"
+#include <Adafruit_MLX90614.h>
 
 //define core
 #define CORE1 0
@@ -15,9 +16,7 @@ TaskHandle_t gy906_handler;
 TaskHandle_t em4305_handler;
 
 //post handler
-TaskHandle_t hx711_post_handler;
-TaskHandle_t gy906_post_handler;
-TaskHandle_t em4305_post_handler;
+TaskHandle_t post_handler;
 
 //datas
 float gy906_data;
@@ -28,6 +27,9 @@ String rfid_data;
 const int LOADCELL_DOUT_PIN = 16;
 const int LOADCELL_SCK_PIN = 4;
 HX711 scale;
+
+Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+
 
 
 void hx711(void *param){
@@ -45,8 +47,9 @@ void hx711(void *param){
 }
 void gy906(void *param){
   while(1){
-    Serial.print("gy906 : ");
-    Serial.println(xPortGetCoreID());
+    Serial.print("Ambient = "); Serial.print(mlx.readAmbientTempC());
+    Serial.print("*C\tObject = "); Serial.print(mlx.readObjectTempC()); Serial.println("*C");\
+    Serial.println();
     delay(2000);
   }
 }
@@ -57,25 +60,11 @@ void rfid(void *param){
     delay(3000);
   }
 }
-void hx711_post(void *param){
+void post_func(void *param){
   while(1){
     Serial.print("hx711_post : ");
     Serial.println(xPortGetCoreID());
     delay(4000);
-  }
-}
-void gy906_post(void *param){
-  while(1){
-    Serial.print("gy906_post : ");
-    Serial.println(xPortGetCoreID());
-    delay(5000);
-  }
-}
-void rfid_post(void *param){
-  while(1){
-    Serial.print("ex4305_post : ");
-    Serial.println(xPortGetCoreID());
-    delay(6000);
   }
 }
 
@@ -85,6 +74,11 @@ void setup() {
   //hx711 init
   rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+
+  if (!mlx.begin()) {
+    Serial.println("Error connecting to MLX sensor. Check wiring.");
+    while (1);
+  };
   /*
   xTaskCreatePinnedToCore (
   Task1Code,      // task function name
@@ -96,12 +90,10 @@ void setup() {
   0 );            // executing core number
   */
   xTaskCreatePinnedToCore ( hx711,"hx711", 10000, NULL, 0, &hx711_handler, CORE1 );
-  xTaskCreatePinnedToCore ( gy906,"gy906", 10000, NULL, 1, &gy906_handler, CORE1 );
-  xTaskCreatePinnedToCore ( rfid,"em4305", 10000, NULL, 2, &em4305_handler, CORE1 );
+  xTaskCreatePinnedToCore ( gy906,"gy906", 10000, NULL, 0, &gy906_handler, CORE2 );
+  xTaskCreatePinnedToCore ( rfid,"em4305", 10000, NULL, 0, &em4305_handler, CORE1 );
 
-  xTaskCreatePinnedToCore ( hx711_post,"hx711_post", 10000, NULL, 0, &hx711_post_handler, CORE2 );
-  xTaskCreatePinnedToCore ( gy906_post,"gy906_post", 10000, NULL, 1, &hx711_post_handler, CORE2 );
-  xTaskCreatePinnedToCore ( rfid_post,"em4305_post", 10000, NULL, 2, &hx711_post_handler, CORE2 );
+  xTaskCreatePinnedToCore ( post_func,"post_func", 10000, NULL, 0, &post_handler, CORE2 );
 
 
   
