@@ -111,6 +111,6 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Something..");
-  sleep(10000);
+  //don't use loop block
+  sleep(99999999999999999999999999);
 }
