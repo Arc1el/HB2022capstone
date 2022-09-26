@@ -24,11 +24,22 @@ float gy906_data;
 long hx711_data;
 String rfid_data;
 
+//hx411 wiring
+const int LOADCELL_DOUT_PIN = 16;
+const int LOADCELL_SCK_PIN = 4;
+HX711 scale;
+
 
 void hx711(void *param){
   while(1){
-    Serial.print("hx711 : ");
-    Serial.println(xPortGetCoreID());
+    if (scale.is_ready()) {
+      long reading = scale.read();
+      Serial.print("hx711 data : ");
+      Serial.println(reading);
+    } 
+    else {
+      Serial.println("HX711 not found.");
+    }
     delay(1000);
   }
 }
@@ -70,6 +81,10 @@ void rfid_post(void *param){
 
 void setup() {
   Serial.begin(115200);
+
+  //hx711 init
+  rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
+  scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   /*
   xTaskCreatePinnedToCore (
   Task1Code,      // task function name
