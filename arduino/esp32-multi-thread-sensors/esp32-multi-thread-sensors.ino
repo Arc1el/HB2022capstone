@@ -49,8 +49,7 @@ void hx711(void *param){
 }
 void gy906(void *param){
   while(1){
-    Serial.print("Ambient = "); Serial.print(mlx.readAmbientTempC());
-    Serial.print("*C\tObject = "); Serial.print(mlx.readObjectTempC()); Serial.println("*C");\
+    Serial.print("Object = "); Serial.print(mlx.readObjectTempC()); Serial.println("*C");\
     Serial.println();
     delay(2000);
   }
