@@ -32,15 +32,21 @@ HX711 scale;
 //gy906 wiring
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 float gy906_data;
+int gy906_counter;
 
 //rfid wiring
 HardwareSerial rfid(2);
 String rfid_data;
 
 //Period Setting, unit : second
-#define TEMPERATURE_PERIOD 3
+#define TEMPERATURE_PERIOD 1
 #define BREATH_PERIOD 0.1
 #define SEND_JSON_PERIOD 5
+
+//JSON data Settings
+String jsondata = "";
+StaticJsonBuffer<300> jsonBuffer;
+JsonObject& root = jsonBuffer.createObject();
 
 void hx711(void *param){
   while(1){
@@ -49,15 +55,14 @@ void hx711(void *param){
       if(hx711_now_data < 0){
         hx711_now_data = hx711_now_data * -1;
       }
-      Serial.print(hx711_prev_data);
-      Serial.print("   /   ");
-      Serial.print(hx711_counter);
-      Serial.print("   /   ");
-      Serial.println(hx711_now_status);
+      
       if(hx711_prev_data > hx711_now_data + 100000) {
         hx711_now_status = "constraction";
         if(hx711_prev_status == "expansion" && hx711_now_status == "constraction"){
           hx711_counter += 1;
+          Serial.print("Breath Counter : ");
+          Serial.println(hx711_counter);
+          root["breath"] = hx711_counter;
         }
         hx711_prev_status = hx711_now_status;
         hx711_prev_data = hx711_now_data;
@@ -72,25 +77,46 @@ void hx711(void *param){
 }
 void gy906(void *param){
   while(1){
-    Serial.print("temperature = "); Serial.print(mlx.readObjectTempC()); Serial.println("*C");\
-    delay(TEMPERATURE_PERIOD * 10000);
+    gy906_data = mlx.readObjectTempC();
+    Serial.print("temperature = ");
+    Serial.print(gy906_data);
+    Serial.println("*C");
+    root["temp"] = gy906_data;
+    delay(TEMPERATURE_PERIOD * 1000);
   }
 }
 void rfid_func(void *param){
   while(1){
     if(rfid.available() > 0){
-      rfid_data = rfid.readStringUntil('\n'); //추가 시리얼의 값을 수신하여 String으로 저장
-      Serial.print("RFID reading value : ");
-      Serial.println(rfid_data); //기본 시리얼에 추가 시리얼 내용을 출력
+      //String reading = rfid.readStringUntil('\n\r');
+      String reading = rfid.readString(); //Reading RFID value
+      if(reading == " "){
+        Serial.println("reading value is empty. rfid is not updated");
+      }
+      else{
+        rfid_data = reading;
+        Serial.print("RFID reading value : ");
+        Serial.println(rfid_data);
+        root["rfid"] = rfid_data;
+      }
     }
   }
 }
 void post_func(void *param){
   while(1){
     Serial.println("===== Sending JSON data to Server =====");
+    root.printTo(jsondata);
+    Serial.println(jsondata);
+    root["breath"] = 0;
+    root["temp"] = 0.0;
+    root["rfid"] = rfid_data;
+    jsondata = "";
+    Serial.println("==== Sending the data Successfully ====");
     delay(SEND_JSON_PERIOD * 1000);
 
     hx711_counter = 0;
+    gy906_counter = 0;
+    
   }
 }
 
@@ -105,11 +131,13 @@ void setup() {
   hx711_counter = 0;
   hx711_now_status = "none";
   hx711_prev_status = "none";
+  
   //gy906 init
   if (!mlx.begin()) {
     Serial.println("Error connecting to MLX sensor. Check wiring.");
     while (1);
   };
+  gy906_counter = 0;
   /*
   xTaskCreatePinnedToCore (
   Task1Code,      // task function name
@@ -131,6 +159,9 @@ void setup() {
 
   //send the data using multi-thread
   xTaskCreatePinnedToCore ( post_func,"post_func", 10000, NULL, 0, &post_handler, CORE2 );
+
+  Serial.println();
+  Serial.println("setup complete");
 
 
   
