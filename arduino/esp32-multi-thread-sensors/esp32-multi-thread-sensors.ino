@@ -32,6 +32,7 @@ HX711 scale;
 //gy906 wiring
 Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 float gy906_data;
+String gy906_string;
 int gy906_counter;
 
 //rfid wiring
@@ -82,6 +83,8 @@ void gy906(void *param){
     Serial.print(gy906_data);
     Serial.println("*C");
     root["temp"] = gy906_data;
+    
+    gy906_counter += 1;
     delay(TEMPERATURE_PERIOD * 1000);
   }
 }
@@ -108,15 +111,16 @@ void post_func(void *param){
     root.printTo(jsondata);
     Serial.println(jsondata);
     root["breath"] = 0;
-    root["temp"] = 0.0;
+    root["temp"] = "";
     root["rfid"] = rfid_data;
     jsondata = "";
     Serial.println("==== Sending the data Successfully ====");
-    delay(SEND_JSON_PERIOD * 1000);
 
+    //initalize data
     hx711_counter = 0;
     gy906_counter = 0;
     
+    delay(SEND_JSON_PERIOD * 1000);
   }
 }
 
@@ -138,6 +142,7 @@ void setup() {
     while (1);
   };
   gy906_counter = 0;
+  gy906_string = "";
   /*
   xTaskCreatePinnedToCore (
   Task1Code,      // task function name
