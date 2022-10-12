@@ -50,13 +50,13 @@ StaticJsonBuffer<300> jsonBuffer;
 JsonObject& root = jsonBuffer.createObject();
 
 void hx711(void *param){
+  
   while(1){
     if (scale.is_ready()) {
       hx711_now_data = scale.read(); // 20000
       if(hx711_now_data < 0){
         hx711_now_data = hx711_now_data * -1;
       }
-      
       if(hx711_prev_data > hx711_now_data + 100000) {
         hx711_now_status = "constraction";
         if(hx711_prev_status == "expansion" && hx711_now_status == "constraction"){
