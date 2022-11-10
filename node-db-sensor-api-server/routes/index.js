@@ -18,7 +18,7 @@ router.post('/', function(req, res, next) {
 
 //recent data(5 limit)
 router.get("/api/recent_data", async function(req, res, next) {
-  sql = "select * from sensor order by date desc limit 5";
+  sql = "select * from sensor, animal order by date desc limit 20";
   data = await send_query(sql);
   res.send(data);
 });
@@ -37,6 +37,23 @@ router.post('/api/get_sensor_data', function(req, res) {
 
   res.send("ok");
 });
+
+router.post('/api/get_rfid_info', async function(req, res) {
+  console.log(req.body);
+  jsondata = req.body;
+  rfid = jsondata.rfid;
+  console.log(rfid);
+  
+  //Saving json data in path and Log to dastabase server
+  try{
+    sql = "select * from animal where rfid='" + rfid + "' limit 1"
+    data = await send_query(sql);
+    res.send(data);
+  }catch (e){
+    console.log("cant't save data. error : ", e);
+  }
+});
+
 
 router.post('/api/query', async function(req, res) {
   //sql : json format. req.body.sql
