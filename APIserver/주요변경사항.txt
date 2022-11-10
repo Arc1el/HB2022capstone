@@ -1,0 +1,17 @@
+(Flutter)
+1. python과 node간 json통신 방식에 약간 차이가 있어 아랫 부분이 수정되어야 함
+ (수정 전) List<dynamic> result = response.data
+ (수정 후) List<dynamic> result = json.decode(response.data);
+
+(Node.js)
+1. cursor사용이 불가능하여 전체 데이터를 읽은 후 인덱스접근 방식으로 변경
+2. 센서데이터를 받아오는부분은 데이터가 어떻게 수신되는지 몰라 예상하여 작성함
+3. werkzeug의 pbkdf2를 사용할 수 없어 pbkdf2-password를 사용함
+ 사용하는 과정에서 member의 password 포멧이 변경됨. db테이블의 pssword항목
+ 길이 조절이 필요함. 테스트 환경은 LONG VARCHAR로 작성되었음.
+ (변경 전)
+ pbkdf2:sha256:260000$RdyaR3daz604dZsP$4c4b630306ab9f21371009d1b3a5d342ea16b61b5d7de331e3ce23e4b2b99bae
+ (변경 후 / salt:hash)
+ +X3fIc953CwHXtVVQZqZGHsCyRCde+Y60NRGawFIK07MXpZ/SdYgLvzvxC7S5oGB0W7XoPcn3f7EvdTMB8Wy/g==:MCDKLZAlwerJt+o6M0tE1AYAxQxvR94KekraxgMDxCL5BAYGK5sAPvxmDyoilBq3Dim7RQuSIxiEiradPZO2rMx3iZwIZIPgzMRIrrFl4h5A+rkWXKGXrdnPkFr1syjOqsBbMbZtNrium3brOfcfK6grcT+Ye1aI47zkC1HJLPs=
+4. smtp를 사용하여 메일을 전송하는 부분은 nodemailer를 사용하였음.
+5. 그외 문법사항 변경 등

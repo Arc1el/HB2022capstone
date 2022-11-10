@@ -1,11 +1,12 @@
 var express = require('express');
+var request = require('request');
+var xmljs = require("xml-js");
 var router = express.Router();
 var fs = require('fs');
 const mysql = require('mysql');
 const dbconfig = require('../config/database.js');
 const connection = mysql.createConnection(dbconfig);
 connection.connect();
-
 
 router.get('/', function(req, res, next) {
   res.send("ok");
@@ -15,14 +16,9 @@ router.post('/', function(req, res, next) {
   res.send("ok");
 });
 
+//recent data(5 limit)
 router.get("/api/recent_data", async function(req, res, next) {
   sql = "select * from sensor order by date desc limit 5";
-  data = await send_query(sql);
-  res.send(data);
-});
-
-router.post("/api/sql", async function(req, res, next) {
-  sql = req.body.sql;
   data = await send_query(sql);
   res.send(data);
 });
@@ -40,6 +36,62 @@ router.post('/api/get_sensor_data', function(req, res) {
   }
 
   res.send("ok");
+});
+
+router.post('/api/query', async function(req, res) {
+  //sql : json format. req.body.sql
+  sql = req.body.sql;
+
+  //send sql to db server
+  try{
+    result = await send_query(sql);
+  }catch (e){
+    console.log("cant't handle the query", e);
+  }
+  res.send(result);
+  console.log("result = ", result);
+});
+
+router.post('/api/set_owner', async function(req, res) {
+  //sql : json format. req.body.sql
+  key = "8U2ibv92GlQZ8ksIKCY+yePbTPIgkcCddyLCvdLIXc4aBoYFxD8+2ytviCiYY5gGs8xHhSUNZ0yRA5rgxGwc3w==";
+  data = req.body;
+  rfid = data.rfid;
+  owner = data.owner;
+
+  try{
+    const options = {
+      uri: "http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo",
+      qs:{
+        serviceKey : key,
+        dog_reg_no : rfid,
+        owner_nm : owner
+      }
+    };
+    request(options,async function(err,response,body){
+      dat = xmljs.xml2json(body, {compact: true, spaces: 4});
+      dat = JSON.parse(dat).response.body.item;
+      console.log(dat);
+      
+      dog_name = dat.dogNm._text;
+      dog_sex = dat.sexNm._text;
+      dog_kind = dat.kindNm._text;
+      dog_neuter = dat.neuterYn._text;
+      dog_org = dat.orgNm._text;
+      dog_office = dat.officeTel._text;
+
+      //send sql to db server
+      try{
+        sql = "insert into animal(rfid, owner, name, sex, kind, neuter, org, office)values('";
+        sql += rfid + "','" + owner + "','" + dog_name + "','" + dog_sex + "','";
+        sql += dog_kind + "','" + dog_neuter + "','" + dog_org + "','" + dog_office + "')";
+        result = await send_query(sql);
+        res.send(result);
+      }catch (e){
+        console.log("cant't handle the query", e);
+      }
+    })
+  }catch{}
 });
 
 //Sending the query function
@@ -77,46 +129,19 @@ function get_date_string(){
   return date_string;
 }
 
-function save_sensor_data(data){
-  //sensor datasclea
-  sensor01 = data.SENSOR.SENSOR01;
-  sensor02 = data.SENSOR.SENSOR02;
-  sensor03 = data.SENSOR.SENSOR03;
-  sensor04 = data.SENSOR.SENSOR04;
-  
-  //make sensor array using for loop
-  senarr = [sensor01, sensor02, sensor03, sensor04];
+async function save_sensor_data(data){
+  try{
+    date = get_date_string();
+    temp = data.temp;
+    rfid = data.rfid;
+    breath = data.breath;
 
-  for (sen in senarr){
-    //sensor data, type;
-    type = senarr[sen].type;
-    data = senarr[sen].data;
-
-    try{
-      //set date_string
-      date_string = get_date_string();
-      //set file name. ex) ECG_DATA_2022-07-25_09:59:26:123
-      filename = type + "_" + date_string;
-      //set directory path for saving json data
-      dir = "./sensordata/" + type + "/";
-
-      //if not exist the directory
-      try{
-        fs.mkdir(dir, {recursive: true}, err => {});
-      }catch (e){
-        console.log("mkdir failed");
-      }
-
-      //saving datas
-      fs.writeFileSync(dir + filename + ".json", JSON.stringify(senarr[sen]));
-      sql = "insert into sensor(sensor_type, date, filename)values('";
-      sql += type + "','" + date_string + "','" + filename + ".json')";
-
-      //sending query
-      send_query(sql);
-    }catch (e){
-      console.log("sorry, i can't read sensor data!");
-    }
+    sql = "insert into sensor(date, breath, temp, rfid)values('";
+    sql += date + "','" + breath + "','" + temp + "','" + rfid + "')";
+    await send_query(sql);
+  }catch (e){
+    console.log("sorry, i can't read sensor data!");
+    console.log(e)
   }
 }
 
