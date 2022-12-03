@@ -7,7 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('node-db-sensor-api-server:server');
 var http = require('http');
-
+var https = require('https');
+const fs = require('fs')
+const path = require('path')
 /**
  * Get port from environment and store in Express.
  */
@@ -19,8 +21,15 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+ const options = {
+  //key: fs.readFileSync(path.join(__dirname, config.sslKey), 'utf-8'),
+  //cert: fs.readFileSync(path.join(__dirname, config.sslCrt), 'utf-8')
+  key: fs.readFileSync(path.join(__dirname, "./rootca.key"), 'utf-8'),
+  cert: fs.readFileSync(path.join(__dirname, "./rootca.crt"), 'utf-8')
+}
 
+//var server = http.createServer(app);
+var server = https.createServer(options, app);
 /**
  * Listen on provided port, on all network interfaces.
  */
