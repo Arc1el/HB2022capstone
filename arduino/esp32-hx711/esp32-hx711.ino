@@ -24,7 +24,7 @@ void setup() {
   read_data = 0;
   counter = 0;
   scale_data = 0;
-  threshold = 30000;
+  threshold = 400;
   breath_stat = "";
 }
 
@@ -32,17 +32,17 @@ void loop() {
   if (scale.is_ready()) {
     
     scale_data = scale.read(); // 20000
-    Serial.print("prev_data : ");
-    Serial.print(hx711_prev_data);
-    Serial.print(" scale : ");
-    Serial.println(scale_data);
+    //Serial.print("prev_data : ");
+    //Serial.print(hx711_prev_data);
+    //Serial.print(" scale : ");
+    //Serial.println(scale_data);
     
-    if (scale_data < hx711_prev_data){
+    if (scale_data > hx711_prev_data){
       hx711_prev_data = scale_data;
       breath_stat = "expansion";
     }
     
-    if (scale_data > hx711_prev_data + threshold){
+    if (scale_data + threshold < hx711_prev_data){
       if (breath_stat = "expansion"){
         counter += 1;
         Serial.println(counter);

@@ -25,11 +25,12 @@ TaskHandle_t post_handler;
 //hx411 wiring
 const int LOADCELL_DOUT_PIN = 16;
 const int LOADCELL_SCK_PIN = 4;
-long hx711_now_data;
+long scale_data;
 long hx711_prev_data;
 long hx711_counter;
-String hx711_now_status;
-String hx711_prev_status;
+String breath_stat;
+int threshold;
+
 HX711 scale;
 
 //gy906 wiring
@@ -43,9 +44,9 @@ HardwareSerial rfid(2);
 String rfid_data;
 
 //Period Setting, unit : second
-#define TEMPERATURE_PERIOD 1
+#define TEMPERATURE_PERIOD 3
 #define BREATH_PERIOD 0.1
-#define SEND_JSON_PERIOD 5
+#define SEND_JSON_PERIOD 20
 
 //JSON data Settings
 int status_first;
@@ -57,32 +58,33 @@ void hx711(void *param){
   
   while(1){
     if (scale.is_ready()) {
-      hx711_now_data = scale.read(); // 20000
-      if(hx711_now_data < 0){
-        hx711_now_data = hx711_now_data * -1;
-      }
-      if(hx711_prev_data > hx711_now_data + 100000) {
-        hx711_now_status = "constraction";
-        if(hx711_prev_status == "expansion" && hx711_now_status == "constraction"){
-          hx711_counter += 1;
-          Serial.print("Breath Counter : ");
-          Serial.println(hx711_counter);
-          root["breath"] = hx711_counter;
+
+      scale_data = scale.read(); // 20000
+    //Serial.print("prev_data : ");
+    //Serial.print(hx711_prev_data);
+    //Serial.print(" scale : ");
+    //Serial.println(scale_data);
+    
+    if (scale_data > hx711_prev_data){
+      hx711_prev_data = scale_data;
+      breath_stat = "expansion";
+    }
+    
+    if (scale_data + threshold < hx711_prev_data){
+      if (breath_stat = "expansion"){
+        hx711_counter += 1;
+        Serial.println(hx711_counter);
+        breath_stat = "deflation";
+        hx711_prev_data = scale_data;
+        root["breath"] = hx711_counter;
         }
-        hx711_prev_status = hx711_now_status;
-        hx711_prev_data = hx711_now_data;
-      }
-      else if(hx711_prev_data + 100000 < hx711_now_data){
-        hx711_now_status = "expansion";
-        hx711_prev_status = hx711_now_status;
-        hx711_prev_data = hx711_now_data;
       }
     }  
   }
 }
 void gy906(void *param){
   while(1){
-    gy906_data = mlx.readObjectTempC();
+    gy906_data = mlx.readObjectTempC()+2;
     Serial.print("temperature = ");
     Serial.print(gy906_data);
     Serial.println("*C");
@@ -94,17 +96,20 @@ void gy906(void *param){
 }
 void rfid_func(void *param){
   while(1){
-    if(rfid.available() > 0){
-      //String reading = rfid.readStringUntil('\n\r');
-      String reading = rfid.readString(); //Reading RFID value
+    if(rfid.available() > 0 && rfid_data == ""){
+      String reading = rfid.readStringUntil('\n\r');
+      //String reading = rfid.readString(); //Reading RFID value
       if(reading == " "){
         Serial.println("reading value is empty. rfid is not updated");
       }
       else{
-        rfid_data = reading;
+        rfid_data = reading.substring(1);
+        rfid_data.trim();
         Serial.print("RFID reading value : ");
         Serial.println(rfid_data);
+        
         root["rfid"] = rfid_data;
+        delay(5 * 1000);
       }
     }
   }
@@ -115,15 +120,20 @@ void post_func(void *param){
       Serial.println("First Sending... delay for 2ec");
       delay(2000);
     }
-    Serial.println("===== Sending JSON data to Server =====");
+    //Serial.println("===== Sending JSON data to Server =====");
+    //for test
+    //root["rfid"] = "410100008131982";
     root.printTo(jsondata);
+    root["breath"] = 0;
 
     //sending json data
     if(WiFi.status() == WL_CONNECTED){
       Serial.println("json sending start");
       HTTPClient http;   
-     
-      http.begin("http://httpbin.org/post");              // Specify destination for HTTP request
+
+      //for the test
+      //http.begin("http://httpbin.org/post");
+      http.begin("https://arc1el.iptime.org:3000/api/get_sensor_data");              // Specify destination for HTTP request
       http.addHeader("Content-Type",
                      "application/x-www-form-urlencoded");  // Specify content-type header
       
@@ -147,8 +157,9 @@ void post_func(void *param){
     }
     
     Serial.println(jsondata);
-    root["breath"] = 0;
-    root["temp"] = "";
+    
+    
+    delay(SEND_JSON_PERIOD * 1000);
     root["rfid"] = rfid_data;
     jsondata = "";
     
@@ -158,8 +169,6 @@ void post_func(void *param){
     gy906_counter = 0;
 
     status_first = 1;
-    
-    delay(SEND_JSON_PERIOD * 1000);
   }
 }
 
@@ -173,9 +182,9 @@ void setup() {
 
   WiFiManager wm;
   //if you wanna reset settings on rebooting device, using this code
-  //wm.resetSettings();
+  wm.resetSettings();
   bool res;
-  res = wm.autoConnect("Settings"); // password protected ap
+  res = wm.autoConnect("HospetterSettings"); // password protected ap
 
   if(!res) {
       Serial.println("connection-failed");
@@ -191,11 +200,11 @@ void setup() {
   //hx711 init
   rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  hx711_prev_data = 0;
-  hx711_now_data = 0;
+  hx711_prev_data = 99999999;
+  scale_data = 0;
   hx711_counter = 0;
-  hx711_now_status = "none";
-  hx711_prev_status = "none";
+  breath_stat = "";
+  threshold = 1000;
   
   //gy906 init
   if (!mlx.begin()) {
@@ -218,6 +227,10 @@ void setup() {
 
   //rfid init
   rfid.begin(9600, SERIAL_8N1, 36, 13);
+  //for the test
+  
+  rfid_data = "";
+  
 
   //collect the data using multi-thread
   xTaskCreatePinnedToCore ( hx711,"hx711", 10000, NULL, 0, &hx711_handler, CORE2 );
@@ -225,7 +238,7 @@ void setup() {
   xTaskCreatePinnedToCore ( rfid_func,"rfid", 10000, NULL, 0, &rfid_handler, CORE2 );
 
   //send the data using multi-thread
-  xTaskCreatePinnedToCore ( post_func,"post_func", 10000, NULL, 0, &post_handler, CORE2 );
+  xTaskCreatePinnedToCore ( post_func,"post_func", 10000, NULL, 0, &post_handler, CORE1 );
 
   Serial.println();
   Serial.println("setup complete");
