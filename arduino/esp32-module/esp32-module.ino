@@ -173,7 +173,7 @@ void setup() {
 
   WiFiManager wm;
   //if you wanna reset settings on rebooting device, using this code
-  wm.resetSettings();
+  //wm.resetSettings();
   bool res;
   res = wm.autoConnect("Settings"); // password protected ap
 
@@ -220,9 +220,9 @@ void setup() {
   rfid.begin(9600, SERIAL_8N1, 36, 13);
 
   //collect the data using multi-thread
-  xTaskCreatePinnedToCore ( hx711,"hx711", 10000, NULL, 0, &hx711_handler, CORE1 );
+  xTaskCreatePinnedToCore ( hx711,"hx711", 10000, NULL, 0, &hx711_handler, CORE2 );
   xTaskCreatePinnedToCore ( gy906,"gy906", 10000, NULL, 0, &gy906_handler, CORE2 );
-  xTaskCreatePinnedToCore ( rfid_func,"rfid", 10000, NULL, 0, &rfid_handler, CORE1 );
+  xTaskCreatePinnedToCore ( rfid_func,"rfid", 10000, NULL, 0, &rfid_handler, CORE2 );
 
   //send the data using multi-thread
   xTaskCreatePinnedToCore ( post_func,"post_func", 10000, NULL, 0, &post_handler, CORE2 );

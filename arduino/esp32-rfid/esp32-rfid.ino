@@ -5,7 +5,7 @@ HardwareSerial mySerial(2); //3개의 시리얼 중 2번 채널을 사용
 //36 pin is rx
 void setup() {
   //115200
-    Serial.begin(9600); //기존의 기본 시리얼
+    Serial.begin(115200); //기존의 기본 시리얼
     mySerial.begin(9600, SERIAL_8N2, 36, 13); //추가로 사용할 시리얼. RX:12 / TX:13번 핀 사용
 }
 

@@ -7,10 +7,12 @@ const int LOADCELL_DOUT_PIN = 16;
 const int LOADCELL_SCK_PIN = 4;
 bool TARE_FLAG = false;
 
-long hx711_data;
+long hx711_prev_data;
 long read_data;
 int counter;
-
+int scale_data;
+int threshold;
+String breath_stat;
 
 HX711 scale;
 
@@ -18,26 +20,35 @@ void setup() {
   Serial.begin(115200);
   rtc_clk_cpu_freq_set(RTC_CPU_FREQ_80M);
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  hx711_data = 0;
+  hx711_prev_data = 9999999;
   read_data = 0;
   counter = 0;
+  scale_data = 0;
+  threshold = 30000;
+  breath_stat = "";
 }
 
 void loop() {
   if (scale.is_ready()) {
-    read_data = scale.read(); // 20000
-    Serial.print(hx711_data);
-    Serial.print("   /   ");
-    Serial.println(counter);
     
-    if(hx711_data > read_data + 100000) {
-      if((hx711_data > 0) && (read_data < 0)) {
-        counter += 1;
-      }
-      hx711_data = read_data;
+    scale_data = scale.read(); // 20000
+    Serial.print("prev_data : ");
+    Serial.print(hx711_prev_data);
+    Serial.print(" scale : ");
+    Serial.println(scale_data);
+    
+    if (scale_data < hx711_prev_data){
+      hx711_prev_data = scale_data;
+      breath_stat = "expansion";
     }
-    else if(hx711_data + 100000 < read_data){
-      hx711_data = read_data;
-    }  
+    
+    if (scale_data > hx711_prev_data + threshold){
+      if (breath_stat = "expansion"){
+        counter += 1;
+        Serial.println(counter);
+        breath_stat = "deflation";
+        hx711_prev_data = scale_data;
+      }
+    }
   }
 }
